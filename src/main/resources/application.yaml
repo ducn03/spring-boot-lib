@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: dev
+server:
+  address: ${COM_SPRING_SERVER_PRJ_HOST:localhost}
+  port: ${COM_SPRING_SERVER_PRJ_PORT:9000}

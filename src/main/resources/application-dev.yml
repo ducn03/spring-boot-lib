@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    show-sql: ${COM_HC_DATABASE_SHOW_SQL:false}
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    springboot:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: ${COM_SPRING_DATABASE_URL:jdbc:mysql://localhost:3307/springbootlib}
+      username: ${COM_SPRING_DATABASE_USERNAME:root}
+      password: ${COM_SPRING_DATABASE_PASSWORD:root}
+    hikari:
+      connection-timeout: 600000
+  redis:
+    host: ${COM_SPRING_REDIS_HOST:localhost}
+    port: ${COM_SPRING_REDIS_PORT:6379}
+    password: ${COM_SPRING_REDIS_PASSWORD:}
+    database: ${COM_SPRING_REDIS_DATABASE:5}
+  artemis:
+    embedded:
+      server-id:

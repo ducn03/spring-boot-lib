@@ -8,7 +8,6 @@
 *.java text eol=lf
 *.xml text eol=lf
 *.properties text eol=lf
-*.sh text eol=lf  # Nếu bạn có shell script
 *.txt text eol=lf
 *.md text eol=lf
 .gitignore text eol=lf
