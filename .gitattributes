@@ -1,0 +1,15 @@
+/mvnw text eol=lf
+*.cmd text eol=crlf
+
+# Khai báo các tệp văn bản sẽ có kết thúc dòng LF khi checkout và CRLF khi commit
+* text=auto
+
+# Đánh dấu rõ ràng các loại tệp này là văn bản và sử dụng LF
+*.java text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.sh text eol=lf  # Nếu bạn có shell script
+*.txt text eol=lf
+*.md text eol=lf
+.gitignore text eol=lf
+.mvn/wrapper/maven-wrapper.properties text eol=lf
