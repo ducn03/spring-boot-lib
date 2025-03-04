@@ -10,5 +10,7 @@ public interface ErrorCodes {
 
         int PAGE_NOT_FOUND = 404;
         int DUPLICATE_REQUEST = 40000001;
+        int FORBIDDEN = 403;
+        int SYSTEM_ERROR = 500;
     }
 }

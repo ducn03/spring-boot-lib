@@ -9,7 +9,8 @@ public interface RouteConstant {
         }
 
         interface USER {
-            String USER = "/app/user";
+            String USERS = "/app/users";
+            String USER = "/app/users/{userId}";
         }
     }
 }
