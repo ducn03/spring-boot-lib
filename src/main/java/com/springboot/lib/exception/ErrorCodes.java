@@ -12,5 +12,10 @@ public interface ErrorCodes {
         int DUPLICATE_REQUEST = 40000001;
         int FORBIDDEN = 403;
         int SYSTEM_ERROR = 500;
+        interface SM{
+            int BAD_REQUEST_ACTION_NOT_FOUND = 10001112;
+            int BAD_REQUEST_STATE_NOT_FOUND = 10001111;
+            int BAD_REQUEST_INPUT_NOT_FOUND = 10001113;
+        }
     }
 }

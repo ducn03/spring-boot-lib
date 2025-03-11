@@ -3,7 +3,9 @@ package com.springboot.prj.service.user;
 import com.springboot.jpa.domain.User;
 import com.springboot.prj.service.user.dto.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
     public User toEntity(UserRequest input){
         User output = new User();

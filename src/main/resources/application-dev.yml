@@ -20,3 +20,7 @@ spring:
   artemis:
     embedded:
       server-id:
+
+  output:
+    ansi:
+      enabled=ALWAYS:

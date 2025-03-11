@@ -19,10 +19,12 @@ public class SpringbootLogger implements ILogger {
 
     @Override
     public void info(String message) {
-        if (message == null || message.isEmpty()) {
-            return;
-        }
         LOG.info(message);
+    }
+
+    @Override
+    public void debug(String message) {
+        LOG.info("(" + Thread.currentThread().getId() + "): " + message);
     }
 
     @Override
