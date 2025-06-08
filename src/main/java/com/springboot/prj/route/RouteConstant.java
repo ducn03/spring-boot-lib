@@ -12,5 +12,9 @@ public interface RouteConstant {
             String USERS = "/app/users";
             String USER = "/app/users/{userId}";
         }
+
+        interface NOTIFY {
+            String NOTIFY = "/app/notify";
+        }
     }
 }

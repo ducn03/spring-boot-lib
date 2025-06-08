@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #notifications {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 200px;
+        }
+    </style>
+</head>
+<body>
+<h1>Notification Client</h1>
+<label for="signature">Signature:</label>
+<input type="text" id="signature" value="user123">
+<label for="notifyType">Notify Type:</label>
+<input type="text" id="notifyType" value="promotion">
+<button onclick="connectWebSocket()">Connect</button>
+<button onclick="disconnectWebSocket()">Disconnect</button>
+<h2>Notifications</h2>
+<div id="notifications"></div>
+
+<script>
+    let ws = null;
+
+    function connectWebSocket() {
+        const signature = document.getElementById('signature').value;
+        const notifyType = document.getElementById('notifyType').value;
+        const wsUrl = `ws://localhost:9000/webSocket?${signature}`;
+
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = function() {
+            console.log('WebSocket connected');
+            addNotification('Connected to WebSocket');
+            // Gửi yêu cầu tham gia phòng notify
+<!--            const joinMessage = {-->
+<!--                type: 'notify',-->
+<!--                notifyType: notifyType,-->
+<!--                content: 'join',-->
+<!--                timestamp: Date.now()-->
+<!--            };-->
+<!--            ws.send(JSON.stringify(joinMessage));-->
+        };
+
+        ws.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            console.log("start give event");
+            console.log(message);
+            if (message.type === 'NOTIFY') {
+                addNotification(`[${new Date(message.timestamp).toLocaleString()}] ${message.content}`);
+            }
+        };
+
+        ws.onclose = function(event) {
+            console.log('WebSocket closed:', event);
+            addNotification('Disconnected from WebSocket');
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+            addNotification('WebSocket error occurred');
+        };
+    }
+
+    function disconnectWebSocket() {
+        if (ws) {
+            ws.close();
+            ws = null;
+        }
+    }
+
+    function addNotification(message) {
+        const notificationsDiv = document.getElementById('notifications');
+        const p = document.createElement('p');
+        p.textContent = message;
+        notificationsDiv.appendChild(p);
+    }
+</script>
+</body>
+</html>
