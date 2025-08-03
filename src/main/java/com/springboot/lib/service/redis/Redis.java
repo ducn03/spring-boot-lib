@@ -27,4 +27,5 @@ public interface Redis {
     boolean hashExists(String key, String hashKey);
     String hashGet(String key, String hashKey);
     void hashDelete(String key, Object... hashKey);
+    void send(String topic, String message);
 }

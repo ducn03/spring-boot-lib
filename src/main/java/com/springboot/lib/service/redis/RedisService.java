@@ -1,7 +1,9 @@
 package com.springboot.lib.service.redis;
 
+import lombok.CustomLog;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,11 +11,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@CustomLog
 public class RedisService implements Redis, RedisConstant {
+    private final RedisMessageListenerContainer container;
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisScript<Boolean> singleRequest;
 
-    public RedisService(RedisTemplate<String, String> redisTemplate, RedisScript<Boolean> singleRequest) {
+    public RedisService(RedisMessageListenerContainer container, RedisTemplate<String, String> redisTemplate, RedisScript<Boolean> singleRequest) {
+        this.container = container;
         this.redisTemplate = redisTemplate;
         this.singleRequest = singleRequest;
     }
@@ -74,4 +79,11 @@ public class RedisService implements Redis, RedisConstant {
     public void hashDelete(String key, Object... hashKey) {
         this.redisTemplate.opsForHash().delete(key, hashKey);
     }
+
+    @Override
+    public void send(String topic, String message) {
+        redisTemplate.convertAndSend(topic, message);
+        log.info(String.format("Send message event in topic %s with message %s", topic, message));
+    }
+
 }
