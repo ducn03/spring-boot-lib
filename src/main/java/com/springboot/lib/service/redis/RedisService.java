@@ -1,6 +1,7 @@
 package com.springboot.lib.service.redis;
 
 import lombok.CustomLog;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -17,7 +18,9 @@ public class RedisService implements Redis, RedisConstant {
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisScript<Boolean> singleRequest;
 
-    public RedisService(RedisMessageListenerContainer container, RedisTemplate<String, String> redisTemplate, RedisScript<Boolean> singleRequest) {
+    public RedisService(RedisMessageListenerContainer container,
+                        RedisTemplate<String, String> redisTemplate,
+                        @Qualifier("main-single-request") RedisScript<Boolean> singleRequest) {
         this.container = container;
         this.redisTemplate = redisTemplate;
         this.singleRequest = singleRequest;
@@ -65,6 +68,11 @@ public class RedisService implements Redis, RedisConstant {
     }
 
     @Override
+    public boolean singleRequestHad(String key, long ttl) {
+        return this.redisTemplate.opsForValue().setIfAbsent(key, "0", ttl, TimeUnit.SECONDS);
+    }
+
+    @Override
     public boolean hashExists(String key, String hashKey) {
         return this.redisTemplate.opsForHash().hasKey(key, hashKey);
     }
@@ -78,12 +86,6 @@ public class RedisService implements Redis, RedisConstant {
     @Override
     public void hashDelete(String key, Object... hashKey) {
         this.redisTemplate.opsForHash().delete(key, hashKey);
-    }
-
-    @Override
-    public void send(String topic, String message) {
-        redisTemplate.convertAndSend(topic, message);
-        log.info(String.format("Send message event in topic %s with message %s", topic, message));
     }
 
 }

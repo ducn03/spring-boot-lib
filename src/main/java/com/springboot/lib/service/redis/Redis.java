@@ -24,8 +24,8 @@ public interface Redis {
     void hSet(String key, String hash, String value);
     Set<Object> hGetAll(String key);
     boolean singleRequest(String key, long ttl);
+    boolean singleRequestHad(String key, long ttl);
     boolean hashExists(String key, String hashKey);
     String hashGet(String key, String hashKey);
     void hashDelete(String key, Object... hashKey);
-    void send(String topic, String message);
 }
