@@ -11,6 +11,9 @@ public interface RouteConstant {
         interface USER {
             String USERS = "/app/users";
             String USER = "/app/users/{userId}";
+            String CREATE = "/app/users";
+            String UPDATE = "/app/users/{userId}";
+            String STATUS_CHANGE = "/app/users/{userId}/status-change";
         }
 
         interface NOTIFY {

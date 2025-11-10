@@ -1,13 +1,16 @@
 package com.springboot.lib.service.controller;
 
-import org.springframework.data.domain.Page;
+import com.springboot.lib.dto.PagingData;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.function.ServerResponse;
 
 public interface ControllerService {
-    ServerResponse success(Object data);
-    <T> ServerResponse success(Object data, Page<T> page);
+    ResponseEntity<?> success(Object data);
 
-    ServerResponse error(int error, String message);
+    ResponseEntity<?> success(Object data, PagingData pagingData);
 
-    ServerResponse systemError();
+    ResponseEntity<?> error(int error, String message);
+
+    ResponseEntity<?> systemError();
 }

@@ -2,7 +2,7 @@ package com.springboot.lib.sm;
 
 import com.springboot.jpa.domain.SM;
 import com.springboot.jpa.repository.SMRepository;
-import com.springboot.lib.exception.AppThrower;
+import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
 
 import java.sql.Timestamp;
@@ -47,7 +47,7 @@ public abstract class StateMachine<I extends SMInput, T extends SMData<T>> {
     protected SM loadInternal(I input, Template<T> template) {
         Optional<SM> smOptional = smRepository.findByTemplateIdAndMasterIdOrderByIdDesc(template.getId(), input.getMasterId());
         if (smOptional.isEmpty()) {
-            AppThrower.ep(ErrorCodes.SYSTEM.SM.BAD_REQUEST_INPUT_NOT_FOUND);
+            throw new AppException(ErrorCodes.SYSTEM.SM.BAD_REQUEST_INPUT_NOT_FOUND);
         }
         return smOptional.get();
     }

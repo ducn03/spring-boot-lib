@@ -10,7 +10,7 @@ CREATE TABLE U_USER (
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login_date TIMESTAMP,
     role_group_id BIGINT,
-    status INT DEFAULT 1, -- Cột trạng thái người dùng
+    EStatus INT DEFAULT 1, -- Cột trạng thái người dùng
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời điểm tạo bản ghi
     updatedAt TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Thời điểm cập nhật bản ghi
     -- Các cột khác có thể thêm vào tùy nhu cầu

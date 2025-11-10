@@ -4,6 +4,7 @@ import com.springboot.lib.exception.ErrorCodes;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 
 @Getter
 @Setter
@@ -18,11 +19,11 @@ public class ResponseData {
         return responseData;
     }
 
-    public static <T> ResponseData success(Object data, Page<T> page) {
+    public static ResponseData success(Object data, PagingData page) {
         ResponseData responseData = new ResponseData();
         responseData.setMeta(new Meta(ErrorCodes.OK, "success"));
         responseData.setData(data);
-        responseData.getMeta().setPagination(new Pagination<>(page));
+        responseData.getMeta().setPagingData(page);
         return responseData;
     }
 

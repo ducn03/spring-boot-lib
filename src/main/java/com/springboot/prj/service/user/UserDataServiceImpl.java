@@ -2,8 +2,9 @@ package com.springboot.prj.service.user;
 
 import com.springboot.jpa.domain.User;
 import com.springboot.jpa.repository.UserRepository;
-import com.springboot.lib.enums.Status;
-import com.springboot.lib.exception.AppThrower;
+import com.springboot.lib.dto.PagingData;
+import com.springboot.lib.enums.EStatus;
+import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
 import com.springboot.lib.service.redis.Redis;
 import com.springboot.prj.service.user.dto.UserDTO;
@@ -30,28 +31,27 @@ public class UserDataServiceImpl implements UserDataService{
     }
 
     @Override
-    public List<UserDTO> getUsers(Page<User> page) {
-        List<User> userList = page.getContent();
-        return userList.stream().map(this.userMapper::toDTO).collect(Collectors.toList());
-    }
+    public List<UserDTO> getUsers(PagingData pagingData) {
+        Pageable pageable = PageRequest.of(pagingData.getPageIndex(), pagingData.getPageSize());
+        Page<User> userPage = userRepository.findByStatus(EStatus.ACTIVE.getValue(), pageable);
+        pagingData.update(userPage);
 
-    @Override
-    public Page<User> getUsers(int pageIndex, int pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex, pageSize);
-        return userRepository.findByStatus(Status.ACTIVE.getValue(), pageable);
+        return userPage.stream().map(this.userMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
     public UserDTO getUser(long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) AppThrower.ep(ErrorCodes.SYSTEM.BAD_REQUEST);
+        if (userOptional.isEmpty()) {
+            throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
+        };
         return this.userMapper.toDTO(userOptional.get());
     }
 
     @Override
     public UserDTO create(UserRequest userRequest) {
         if (!redis.singleRequest(userRequest.getUsername(), 3)){
-            AppThrower.ep(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
+            throw new AppException(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
         }
         User user = this.userMapper.toEntity(userRequest);
         this.userRepository.save(user);
@@ -61,7 +61,7 @@ public class UserDataServiceImpl implements UserDataService{
     @Override
     public UserDTO update(UserRequest userRequest, long userId) {
         if (!redis.singleRequest(String.valueOf(userId), 3)){
-            AppThrower.ep(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
+            throw new AppException(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
         }
         userRequest.setId(userId);
         User user = this.userMapper.toEntity(userRequest);
@@ -72,12 +72,14 @@ public class UserDataServiceImpl implements UserDataService{
     @Override
     public UserDTO delete(long userId) {
         if (!redis.singleRequest(String.valueOf(userId), 3)){
-            AppThrower.ep(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
+            throw new AppException(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
         }
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) AppThrower.ep(ErrorCodes.SYSTEM.BAD_REQUEST);
+        if (userOptional.isEmpty()) {
+            throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
+        }
         User user = userOptional.get();
-        user.setStatus(Status.DELETED.getValue());
+        user.setStatus(EStatus.DELETED.getValue());
         this.userRepository.save(user);
         return this.userMapper.toDTO(user);
     }

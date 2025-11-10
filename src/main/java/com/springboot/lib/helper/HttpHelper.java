@@ -1,7 +1,7 @@
 package com.springboot.lib.helper;
 
 import com.springboot.lib.dto.UserInfo;
-import com.springboot.lib.exception.AppThrower;
+import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
 import org.springframework.web.servlet.function.ServerRequest;
 
@@ -13,15 +13,14 @@ public class HttpHelper {
             String json = (String) request.attributes().get("request-body");
             return JsonHelper.toObject(json, clazz);
         } catch (Exception e) {
-            AppThrower.ep(ErrorCodes.SYSTEM.BAD_REQUEST);
-            return null;
+            throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
         }
     }
 
     public static UserInfo getUserInfo(ServerRequest request) {
         Optional<Object> userInfoOptional = request.attribute("user-info");
         if (userInfoOptional.isEmpty()) {
-            AppThrower.ep(ErrorCodes.SYSTEM.BAD_REQUEST);
+            throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
         }
         return (UserInfo) userInfoOptional.get();
     }

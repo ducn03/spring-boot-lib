@@ -7,7 +7,7 @@ spring:
   datasource:
     springboot:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      jdbc-url: ${COM_SPRING_DATABASE_URL:jdbc:mysql://localhost:3307/springbootlib}
+      jdbc-url: ${COM_SPRING_DATABASE_URL:jdbc:mysql://localhost:3308/springbootlib}
       username: ${COM_SPRING_DATABASE_USERNAME:root}
       password: ${COM_SPRING_DATABASE_PASSWORD:root}
     hikari:

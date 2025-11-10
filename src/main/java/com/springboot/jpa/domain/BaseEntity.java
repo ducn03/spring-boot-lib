@@ -1,6 +1,6 @@
 package com.springboot.jpa.domain;
 
-import com.springboot.lib.enums.Status;
+import com.springboot.lib.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ public class BaseEntity {
     public Long id;
 
     @Column(name = "status")
-    private int status = Status.ACTIVE.getValue();
+    private int status = EStatus.ACTIVE.getValue();
 
     @Column(name = "created_at", insertable = false)
     private Timestamp createdAt;

@@ -12,7 +12,7 @@ public class Meta {
     private String message;
     private String requestId;
     private String responseId;
-    private Pagination pagination;
+    private PagingData pagingData;
 
     public Meta() {
 

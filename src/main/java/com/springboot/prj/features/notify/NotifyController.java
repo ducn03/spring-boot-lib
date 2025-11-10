@@ -5,6 +5,7 @@ import com.springboot.prj.ws.SocketServer;
 import com.springboot.prj.ws.message.NotifyMessage;
 import com.springboot.prj.ws.room.RoomType;
 import lombok.CustomLog;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
@@ -20,7 +21,7 @@ public class NotifyController {
         this.socketServer = socketServer;
     }
 
-    public ServerResponse sendNoti(ServerRequest request){
+    public ResponseEntity<?> sendNoti(ServerRequest request){
         log.info("start send message");
         NotifyMessage message = new NotifyMessage();
         message.setNotifyType("notify");

@@ -5,16 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SpringbootLogger implements ILogger {
+public class AppLogger implements ILogger {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass().getName());
 
-    private static SpringbootLogger logger;
-    public static SpringbootLogger getInstance() {
+    private static AppLogger logger;
+    public static AppLogger getInstance() {
         if (logger != null) {
             return logger;
         }
-        return logger = new SpringbootLogger();
+        return logger = new AppLogger();
     }
 
     @Override
