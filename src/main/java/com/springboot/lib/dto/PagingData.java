@@ -1,5 +1,6 @@
 package com.springboot.lib.dto;
 
+import com.springboot.lib.constant.RestConstant;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
@@ -10,17 +11,21 @@ public class PagingData {
     /**
      * Trang hiện tại trừ đi 1
      */
-    private int pageIndex = 0;
+    private int pageIndex = RestConstant.PAGE.PAGE_INDEX_DEFAULT;
     /**
      * Số phần tử của 1 trang
      */
-    private int pageSize = 20;
+    private int pageSize = RestConstant.PAGE.PAGE_SIZE_DEFAULT;
 
 
     /**
      * Trang hiện tại <br>
      */
     private int currentPage;
+    /**
+     *
+     */
+    private int currentElements;
     /**
      * Tổng trang
      */
@@ -42,6 +47,7 @@ public class PagingData {
         this.setCurrentPage(items.getNumber());
         this.setTotalPages(items.getTotalPages());
         this.setTotalElements(items.getTotalElements());
+        this.setCurrentElements(items.getNumberOfElements());
         this.setFirstPage(items.isFirst());
         this.setLastPage(items.isLast());
         this.setPageSize(items.getSize());

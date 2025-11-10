@@ -5,6 +5,7 @@ public interface RestConstant {
         String PAGE_INDEX = "pageIndex";
         String PAGE_SIZE = "pageSize";
         int PAGE_SIZE_DEFAULT = 20;
+        int PAGE_INDEX_DEFAULT = 0;
     }
 
     interface USER {

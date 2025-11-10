@@ -9,6 +9,7 @@ import com.springboot.lib.exception.ErrorCodes;
 import com.springboot.lib.service.redis.Redis;
 import com.springboot.prj.service.user.dto.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
+import lombok.CustomLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +20,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserDataServiceImpl implements UserDataService{
+@CustomLog
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final Redis redis;
 
-    public UserDataServiceImpl(UserRepository userRepository, UserMapper userMapper, Redis redis) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, Redis redis) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.redis = redis;
@@ -54,7 +56,7 @@ public class UserDataServiceImpl implements UserDataService{
             throw new AppException(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
         }
         User user = this.userMapper.toEntity(userRequest);
-        this.userRepository.save(user);
+        user = this.userRepository.save(user);
         return this.userMapper.toDTO(user);
     }
 
@@ -65,7 +67,7 @@ public class UserDataServiceImpl implements UserDataService{
         }
         userRequest.setId(userId);
         User user = this.userMapper.toEntity(userRequest);
-        this.userRepository.save(user);
+        user = this.userRepository.save(user);
         return this.userMapper.toDTO(user);
     }
 
@@ -80,7 +82,7 @@ public class UserDataServiceImpl implements UserDataService{
         }
         User user = userOptional.get();
         user.setStatus(EStatus.DELETED.getValue());
-        this.userRepository.save(user);
+        user = this.userRepository.save(user);
         return this.userMapper.toDTO(user);
     }
 }

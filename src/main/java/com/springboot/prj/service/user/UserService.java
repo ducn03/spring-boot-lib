@@ -6,7 +6,7 @@ import com.springboot.prj.service.user.request.UserRequest;
 
 import java.util.List;
 
-public interface UserDataService {
+public interface UserService {
 
     /**
      * @param pagingData - thông tin phân trang

@@ -5,49 +5,50 @@ import com.springboot.lib.dto.PagingData;
 import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
 import com.springboot.lib.service.controller.ControllerService;
-import com.springboot.lib.utils.NumberUtils;
 import com.springboot.prj.route.RouteConstant;
-import com.springboot.prj.service.user.UserDataService;
+import com.springboot.prj.service.user.UserService;
+import com.springboot.prj.service.user.cache.UsersCache;
 import com.springboot.prj.service.user.dto.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
+import com.springboot.prj.service.user.request.UserSearchRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.ServerRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class UserController {
     private final ControllerService controllerService;
-    private final UserDataService userDataService;
+    private final UserService userService;
+    private final UsersCache usersCache;
 
-    public UserController(ControllerService controllerService, UserDataService userDataService) {
+    public UserController(ControllerService controllerService, UserService userService, UsersCache usersCache) {
         this.controllerService = controllerService;
-        this.userDataService = userDataService;
+        this.userService = userService;
+        this.usersCache = usersCache;
     }
 
     @GetMapping(RouteConstant.APP.USER.USERS)
-    public ResponseEntity<?> getUsers(ServerRequest request){
-        String pageIndexStr = request.param(RestConstant.PAGE.PAGE_INDEX).toString();
-        String pageSizeStr = request.param(RestConstant.PAGE.PAGE_SIZE).toString();
-
-        int pageIndex = NumberUtils.tryToGetInteger(pageIndexStr);
-        int pageSize = NumberUtils.tryToGetInteger(pageSizeStr);
-
+    public ResponseEntity<?> getUsers(UserSearchRequest searchRequest){
         PagingData pagingData = new PagingData();
-        pagingData.setPageIndex(pageIndex);
-        pagingData.setPageSize(pageSize);
+        pagingData.setPageIndex(searchRequest.getPageIndex());
+        pagingData.setPageSize(searchRequest.getPageSize());
 
-        List<UserDTO> users = userDataService.getUsers(pagingData);
+        List<UserDTO> users = new ArrayList<>();
 
+        if (searchRequest.isHaveCache()) {
+            users = usersCache.get();
+            return controllerService.success(users);
+        }
+
+        users = userService.getUsers(pagingData);
         return controllerService.success(users, pagingData);
     }
 
     @GetMapping(RouteConstant.APP.USER.USER)
-    public ResponseEntity<?> getUser(ServerRequest request){
-        String userIdStr = request.pathVariable(RestConstant.USER.USER_ID);
-        long userId = NumberUtils.tryToGetLong(userIdStr);
-        return controllerService.success(userDataService.getUser(userId));
+    public ResponseEntity<?> getUser(@PathVariable long userId){
+        return controllerService.success(userService.getUser(userId));
     }
 
     @PostMapping(RouteConstant.APP.USER.CREATE)
@@ -55,7 +56,7 @@ public class UserController {
         if (userRequest == null) {
             throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
         }
-        return controllerService.success(userDataService.create(userRequest));
+        return controllerService.success(userService.create(userRequest));
     }
 
     @PostMapping(RouteConstant.APP.USER.UPDATE)
@@ -64,13 +65,11 @@ public class UserController {
         if (userRequest == null) {
             throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
         }
-        return controllerService.success(userDataService.update(userRequest, userId));
+        return controllerService.success(userService.update(userRequest, userId));
     }
 
     @PostMapping(RouteConstant.APP.USER.STATUS_CHANGE)
-    public ResponseEntity<?> delete(ServerRequest request){
-        String userIdStr = request.pathVariable(RestConstant.USER.USER_ID);
-        long userId = NumberUtils.tryToGetLong(userIdStr);
-        return controllerService.success(userDataService.delete(userId));
+    public ResponseEntity<?> delete(@PathVariable long userId){
+        return controllerService.success(userService.delete(userId));
     }
 }

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 public class UserDTO {
-    private long id;
+    private Long id;
     private String username;
     private String email;
     private String phone;

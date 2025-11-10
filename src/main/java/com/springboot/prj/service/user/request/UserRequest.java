@@ -2,13 +2,15 @@ package com.springboot.prj.service.user.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
+@ToString
 public class UserRequest {
-    private long id;
+    private Long id;
     private String username;
     private String password;
     private String email;

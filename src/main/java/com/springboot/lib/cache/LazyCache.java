@@ -1,6 +1,9 @@
 package com.springboot.lib.cache;
 
-public abstract class LazyCache<T extends CacheData> implements ILazyCache<T> {
+import lombok.CustomLog;
+
+@CustomLog
+public abstract class LazyCache<T> implements ILazyCache<T> {
 
     private long time;
     private final int delay;

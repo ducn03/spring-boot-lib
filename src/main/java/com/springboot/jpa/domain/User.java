@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Table(name = "U_USER")
+@ToString
 public class User extends BaseEntity {
     @Column(name = "username")
     private String username;
