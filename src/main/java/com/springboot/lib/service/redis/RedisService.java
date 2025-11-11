@@ -4,7 +4,6 @@ import lombok.CustomLog;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +13,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 @CustomLog
 public class RedisService implements Redis, RedisConstant {
-    private final RedisMessageListenerContainer container;
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisScript<Boolean> singleRequest;
 
-    public RedisService(RedisMessageListenerContainer container,
-                        RedisTemplate<String, String> redisTemplate,
+    public RedisService(RedisTemplate<String, String> redisTemplate,
                         @Qualifier("main-single-request") RedisScript<Boolean> singleRequest) {
-        this.container = container;
         this.redisTemplate = redisTemplate;
         this.singleRequest = singleRequest;
     }

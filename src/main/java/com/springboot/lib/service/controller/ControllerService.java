@@ -12,5 +12,7 @@ public interface ControllerService {
 
     ResponseEntity<?> error(int error, String message);
 
+    ResponseEntity<?> error(int error);
+
     ResponseEntity<?> systemError();
 }
