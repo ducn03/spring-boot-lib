@@ -4,7 +4,10 @@ import com.springboot.lib.constant.RestConstant;
 import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
 import com.springboot.lib.helper.ControllerHelper;
+import com.springboot.lib.helper.HttpHelper;
 import com.springboot.lib.helper.JsonHelper;
+import com.springboot.lib.service.log.HttpLogRequest;
+import com.springboot.lib.service.log.HttpLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +19,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -34,9 +31,11 @@ public class LogActivityHandler {
     private static final String[] UNAUTHENTIC_PATHS = new String[]{"POST-/app/login"};
     private static final String ERROR_MESSAGE_DEFAULT = "Message chưa được định nghĩa";
     private final MessageSource messageSource;
+    private final HttpLogService httpLogService;
 
-    public LogActivityHandler(MessageSource messageSource) {
+    public LogActivityHandler(MessageSource messageSource, HttpLogService httpLogService) {
         this.messageSource = messageSource;
+        this.httpLogService = httpLogService;
     }
 
     @Around("@annotation(LogActivity)")
@@ -48,25 +47,27 @@ public class LogActivityHandler {
                 throw new AppException(ErrorCodes.SYSTEM.LOG_ACTIVITY_ERROR);
             }
 
-            HttpServletRequest request = getCurrentHttpRequest();
+            HttpServletRequest request = HttpHelper.getCurrentHttpRequest();
             setLocaleFromRequest(request);
 
-            String methodType = request != null ? request.getMethod() : "N/A";
-            String fullUrl = request != null ? request.getRequestURL().toString() +
-                    (request.getQueryString() != null ? "?" + request.getQueryString() : "") : "N/A";
+            // Lấy method và endpoint
+            String methodType = HttpHelper.getMethodType(request);
+            String path = HttpHelper.getPath(request);
 
-            if (isUnauthenticPath(methodType, fullUrl)) {
+            // Những endpoint ngoại lệ ko cần validate
+            if (isUnauthenticPath(methodType, path)) {
                 return point.proceed();
             }
 
-            // Log Request (1 dòng)
+            // HttpLog Request (1 dòng)
             if (request != null) {
-                log.info("[REQUEST] method={} url={} targetMethod={} headers={} body={} args={}",
+                log.info("[REQUEST] method={} url={} ip={} targetMethod={} headers={} body={} args={}",
                         methodType,
-                        fullUrl,
+                        HttpHelper.getFullUrl(request),
+                        HttpHelper.getClientIP(request),
                         point.getSignature().toShortString(),
-                        extractHeaders(request),
-                        extractBody(request),
+                        HttpHelper.extractHeaders(request),
+                        HttpHelper.extractBody(request),
                         JsonHelper.convertArgsToJson(point.getArgs())
                 );
             } else {
@@ -78,13 +79,31 @@ public class LogActivityHandler {
             // Duration
             long duration = System.currentTimeMillis() - startTime;
 
-            // Log Response (1 dòng)
-            HttpServletResponse response = getCurrentHttpResponse();
+            // HttpLog Response (1 dòng)
+            HttpServletResponse response = HttpHelper.getCurrentHttpResponse();
             log.info("[RESPONSE] status={} duration={}ms result={} ",
                     response != null ? response.getStatus() : "N/A",
                     duration,
                     JsonHelper.toJson(result)
             );
+
+            // Lưu db để test - Gỡ để giảm latancy
+//            HttpLogRequest httpLogRequest = new HttpLogRequest();
+//            if (request != null) {
+//                httpLogRequest.setIp(HttpHelper.getClientIP(request));
+//            }
+//            httpLogRequest.setMethod(methodType);
+//            httpLogRequest.setUrl(HttpHelper.getFullUrl(request));
+//            httpLogRequest.setTargetMethod(point.getSignature().toShortString());
+//            httpLogRequest.setHeaders(HttpHelper.extractHeaders(request).toString());
+//            if (request != null) {
+//                httpLogRequest.setBody(HttpHelper.extractBody(request));
+//            }
+//            httpLogRequest.setArgs(JsonHelper.convertArgsToJson(point.getArgs()));
+//            httpLogRequest.setStatusCode(response != null ? response.getStatus() : -1);
+//            httpLogRequest.setDuration(duration);
+//            httpLogRequest.setResult(JsonHelper.toJson(result));
+//            httpLogService.log(httpLogRequest);
 
             return result;
         } catch (AppException appException) {
@@ -106,51 +125,6 @@ public class LogActivityHandler {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         return method.getAnnotation(LogActivity.class);
-    }
-
-    private HttpServletRequest getCurrentHttpRequest() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes instanceof ServletRequestAttributes servletRequestAttributes) {
-            return servletRequestAttributes.getRequest();
-        }
-        return null;
-    }
-
-    private HttpServletResponse getCurrentHttpResponse() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes instanceof ServletRequestAttributes servletRequestAttributes) {
-            return servletRequestAttributes.getResponse();
-        }
-        return null;
-    }
-
-    private Map<String, String> extractHeaders(HttpServletRequest request) {
-        if (request == null) return Collections.emptyMap();
-        Map<String, String> headers = new HashMap<>();
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames != null && headerNames.hasMoreElements()) {
-            String name = headerNames.nextElement();
-            headers.put(name, request.getHeader(name));
-        }
-        return headers;
-    }
-
-    private String extractBody(HttpServletRequest request) throws IOException {
-        String contentType = request.getContentType();
-
-        // Nếu là multipart thì không log raw body
-        if (contentType != null && contentType.startsWith("multipart/")) {
-            return "[multipart request: body skipped]";
-        }
-
-        // Nếu không phải multipart => dùng ContentCachingRequestWrapper
-        if (request instanceof ContentCachingRequestWrapper wrapper) {
-            byte[] buf = wrapper.getContentAsByteArray();
-            if (buf.length > 0) {
-                return new String(buf, 0, buf.length, wrapper.getCharacterEncoding());
-            }
-        }
-        return "";
     }
 
     private String getMessage(int code) {

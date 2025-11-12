@@ -1,7 +1,12 @@
 package com.springboot.prj.features.test;
 
+import com.springboot.lib.aop.LogActivity;
 import com.springboot.lib.cache.CacheService;
+import com.springboot.lib.helper.ControllerHelper;
+import com.springboot.lib.service.log.HttpLogService;
 import com.springboot.lib.service.redis.Redis;
+import com.springboot.prj.features.test.cache.LogCache;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,10 +21,26 @@ public class TestController {
     private final Redis redis;
     private final CacheService<String, String> cacheService;
     private final Random random = new Random();
+    private final HttpLogService httpLogService;
+    private final LogCache logCache;
 
-    public TestController(Redis redis, CacheService<String, String> cacheService) {
+    public TestController(Redis redis, CacheService<String, String> cacheService, HttpLogService httpLogService, LogCache logCache) {
         this.redis = redis;
         this.cacheService = cacheService;
+        this.httpLogService = httpLogService;
+        this.logCache = logCache;
+    }
+
+    /**
+     * Lấy http log
+     */
+    @LogActivity
+    @GetMapping("/log")
+    public ResponseEntity<?> getLogs(@RequestParam(defaultValue = "false") boolean hasCache) {
+        if (!hasCache) {
+            return ControllerHelper.success(httpLogService.getAll());
+        }
+        return ControllerHelper.success(logCache.get());
     }
 
     /**

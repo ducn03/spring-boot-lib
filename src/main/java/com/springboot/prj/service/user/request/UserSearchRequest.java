@@ -11,5 +11,5 @@ import lombok.ToString;
 public class UserSearchRequest {
     private int pageIndex = RestConstant.PAGE.PAGE_INDEX_DEFAULT;
     private int pageSize = RestConstant.PAGE.PAGE_SIZE_DEFAULT;
-    private boolean haveCache = false;
+    private boolean hasCache = false;
 }

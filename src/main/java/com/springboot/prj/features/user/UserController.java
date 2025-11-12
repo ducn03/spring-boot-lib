@@ -38,10 +38,9 @@ public class UserController {
         pagingData.setPageSize(searchRequest.getPageSize());
 
         String lang = LocaleContextHolder.getLocale().getLanguage();
-        log.info("Lang: " + lang);
 
         List<UserDTO> users;
-        if (searchRequest.isHaveCache()) {
+        if (searchRequest.isHasCache()) {
             users = usersCache.get();
             return ControllerHelper.success(users);
         }

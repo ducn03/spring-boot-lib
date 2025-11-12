@@ -184,7 +184,7 @@ public class CacheService<K, V> {
                 cleaned++;
             }
         } catch (Exception e) {
-            // Log error nhưng không throw để cleanup tiếp tục
+            // HttpLog error nhưng không throw để cleanup tiếp tục
             System.err.println("Cache cleanup error: " + e.getMessage());
         }
     }

@@ -4,6 +4,8 @@ import com.springboot.lib.enums.EStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.sql.Timestamp;
@@ -24,9 +26,11 @@ public class BaseEntity {
     @Column(name = "status")
     private int status = EStatus.ACTIVE.getValue();
 
-    @Column(name = "created_at", insertable = false)
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
-    @Column(name = "updated_at", insertable = false)
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private Timestamp updatedAt;
 }
