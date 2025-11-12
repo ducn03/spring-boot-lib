@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUser(long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            throw new AppException(ErrorCodes.SYSTEM.BAD_REQUEST);
+            throw new AppException(ErrorCodes.USER.NOT_FOUND);
         };
         return this.userMapper.toDTO(userOptional.get());
     }

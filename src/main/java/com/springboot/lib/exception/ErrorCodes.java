@@ -19,4 +19,8 @@ public interface ErrorCodes {
             int BAD_REQUEST_INPUT_NOT_FOUND = 10001113;
         }
     }
+
+    interface USER {
+        int NOT_FOUND = 10002111;
+    }
 }

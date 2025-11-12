@@ -60,12 +60,16 @@ public class RedisService implements Redis, RedisConstant {
 
     @Override
     public boolean singleRequest(String key, long ttl) {
-        return Boolean.TRUE.equals(this.redisTemplate.execute(this.singleRequest, List.of(key, String.valueOf(ttl)), List.of()));
+        // out date
+        // return Boolean.TRUE.equals(this.redisTemplate.execute(this.singleRequest, List.of(key, String.valueOf(ttl)), List.of()));
+        return this.redisTemplate.opsForValue().setIfAbsent(key, "0", ttl, TimeUnit.SECONDS);
     }
 
     @Override
     public boolean singleRequestHad(String key, long ttl) {
-        return this.redisTemplate.opsForValue().setIfAbsent(key, "0", ttl, TimeUnit.SECONDS);
+        // Để chạy benchmark
+        return Boolean.TRUE.equals(this.redisTemplate.execute(this.singleRequest, List.of(key, String.valueOf(ttl)), List.of()));
+        // return this.redisTemplate.opsForValue().setIfAbsent(key, "0", ttl, TimeUnit.SECONDS);
     }
 
     @Override
