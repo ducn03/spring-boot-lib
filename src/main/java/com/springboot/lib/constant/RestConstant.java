@@ -8,6 +8,11 @@ public interface RestConstant {
         int PAGE_INDEX_DEFAULT = 0;
     }
 
+    interface LANG {
+        String EN = "en";
+        String VI = "vi";
+    }
+
     interface USER {
         String USER_ID = "userId";
     }

@@ -3,6 +3,9 @@ spring:
     show-sql: ${COM_HC_DATABASE_SHOW_SQL:false}
     hibernate:
       ddl-auto: update
+  messages:
+    basename: messages
+    encoding: UTF-8
 
   datasource:
     springboot:

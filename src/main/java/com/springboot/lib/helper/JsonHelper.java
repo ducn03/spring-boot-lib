@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +42,14 @@ public class JsonHelper {
             return mapper.readValue(json, type);
         } catch (Exception e) {
             return Collections.emptyList();
+        }
+    }
+
+    public static String convertArgsToJson(Object[] args) {
+        try {
+            return mapper.writeValueAsString(args);
+        } catch (Exception e) {
+            return Arrays.toString(args);
         }
     }
 }

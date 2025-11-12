@@ -1,11 +1,10 @@
 package com.springboot.lib.aop;
 
-import ch.qos.logback.core.util.StringUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.lib.constant.RestConstant;
 import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
+import com.springboot.lib.helper.ControllerHelper;
 import com.springboot.lib.helper.JsonHelper;
-import com.springboot.lib.service.controller.ControllerService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -31,11 +32,11 @@ import java.util.*;
 public class LogActivityHandler {
 
     private static final String[] UNAUTHENTIC_PATHS = new String[]{"POST-/app/login"};
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private final ControllerService controllerService;
+    private static final String ERROR_MESSAGE_DEFAULT = "Message chưa được định nghĩa";
+    private final MessageSource messageSource;
 
-    public LogActivityHandler(ControllerService controllerService) {
-        this.controllerService = controllerService;
+    public LogActivityHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
     }
 
     @Around("@annotation(LogActivity)")
@@ -48,7 +49,7 @@ public class LogActivityHandler {
             }
 
             HttpServletRequest request = getCurrentHttpRequest();
-            HttpServletResponse response = getCurrentHttpResponse();
+            setLocaleFromRequest(request);
 
             String methodType = request != null ? request.getMethod() : "N/A";
             String fullUrl = request != null ? request.getRequestURL().toString() +
@@ -66,7 +67,7 @@ public class LogActivityHandler {
                         point.getSignature().toShortString(),
                         extractHeaders(request),
                         extractBody(request),
-                        convertArgsToJson(point.getArgs())
+                        JsonHelper.convertArgsToJson(point.getArgs())
                 );
             } else {
                 log.warn("[REQUEST] request is null !!!");
@@ -78,22 +79,21 @@ public class LogActivityHandler {
             long duration = System.currentTimeMillis() - startTime;
 
             // Log Response (1 dòng)
-            log.info("[RESPONSE] status={} result={} duration={}ms",
+            HttpServletResponse response = getCurrentHttpResponse();
+            log.info("[RESPONSE] status={} duration={}ms result={} ",
                     response != null ? response.getStatus() : "N/A",
-                    JsonHelper.toJson(result),
-                    duration
+                    duration,
+                    JsonHelper.toJson(result)
             );
 
             return result;
         } catch (AppException appException) {
-            log.error("CdnException: code={} message={}", appException.getErrorCode(), appException.getErrorMessage(), appException);
-            if (StringUtil.isNullOrEmpty(appException.getErrorMessage())) {
-                return controllerService.error(appException.getErrorCode());
-            }
-            return controllerService.error(appException.getErrorCode(), appException.getErrorMessage());
+            int errorCode = appException.getErrorCode();
+            log.error("AppException: code={} message={}", errorCode, getMessage(errorCode), appException);
+            return ControllerHelper.error(errorCode, getMessage(errorCode));
         } catch (Throwable ex) {
             log.error("Unexpected error in LogActivityHandler", ex);
-            return controllerService.systemError();
+            return ControllerHelper.systemError();
         }
     }
 
@@ -153,11 +153,33 @@ public class LogActivityHandler {
         return "";
     }
 
-    private String convertArgsToJson(Object[] args) {
-        try {
-            return mapper.writeValueAsString(args);
-        } catch (Exception e) {
-            return Arrays.toString(args);
+    private String getMessage(int code) {
+        if (messageSource == null) {
+            return "MessageSource not initialized";
         }
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return messageSource.getMessage(String.valueOf(code), null, ERROR_MESSAGE_DEFAULT, locale);
     }
+
+    private void setLocaleFromRequest(HttpServletRequest request) {
+        if (request == null) {
+            return;
+        }
+
+        String lang = request.getParameter("lang");
+        if (lang == null || lang.isEmpty()) {
+            lang = request.getHeader("Accept-Language");
+        }
+
+        Locale locale;
+        if (lang != null && lang.toLowerCase().startsWith(RestConstant.LANG.EN)) {
+            locale = Locale.ENGLISH;
+        } else {
+            locale = new Locale(RestConstant.LANG.VI);
+        }
+
+        LocaleContextHolder.setLocale(locale);
+    }
+
 }
