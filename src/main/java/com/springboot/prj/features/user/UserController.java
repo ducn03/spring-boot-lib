@@ -9,7 +9,7 @@ import com.springboot.lib.helper.ControllerHelper;
 import com.springboot.prj.route.RouteConstant;
 import com.springboot.prj.service.user.UserService;
 import com.springboot.prj.service.user.cache.UsersCache;
-import com.springboot.prj.service.user.dto.UserDTO;
+import com.springboot.prj.service.user.response.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
 import com.springboot.prj.service.user.request.UserSearchRequest;
 import lombok.CustomLog;

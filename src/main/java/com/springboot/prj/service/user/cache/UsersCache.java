@@ -3,7 +3,7 @@ package com.springboot.prj.service.user.cache;
 import com.springboot.jpa.repository.UserRepository;
 import com.springboot.lib.cache.LazyCache;
 import com.springboot.prj.service.user.UserMapper;
-import com.springboot.prj.service.user.dto.UserDTO;
+import com.springboot.prj.service.user.response.UserDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

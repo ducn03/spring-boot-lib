@@ -72,7 +72,7 @@ public class HttpLogService {
         response.setArgs(httpLog.getArgs());
         response.setStatusCode(httpLog.getStatusCode());
         response.setDuration(httpLog.getDuration());
-        response.setResult(httpLog.getResult());
+        // response.setResult(httpLog.getResult());
 
         return response;
     }

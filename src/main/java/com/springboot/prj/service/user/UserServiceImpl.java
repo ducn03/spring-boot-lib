@@ -7,7 +7,7 @@ import com.springboot.lib.enums.EStatus;
 import com.springboot.lib.exception.AppException;
 import com.springboot.lib.exception.ErrorCodes;
 import com.springboot.lib.service.redis.Redis;
-import com.springboot.prj.service.user.dto.UserDTO;
+import com.springboot.prj.service.user.response.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
 import lombok.CustomLog;
 import org.springframework.data.domain.Page;

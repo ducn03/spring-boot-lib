@@ -1,4 +1,4 @@
-package com.springboot.prj.service.user.dto;
+package com.springboot.prj.service.user.response;
 
 import lombok.Getter;
 import lombok.Setter;

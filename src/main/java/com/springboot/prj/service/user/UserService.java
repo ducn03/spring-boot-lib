@@ -1,7 +1,7 @@
 package com.springboot.prj.service.user;
 
 import com.springboot.lib.dto.PagingData;
-import com.springboot.prj.service.user.dto.UserDTO;
+import com.springboot.prj.service.user.response.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
 
 import java.util.List;

@@ -92,22 +92,27 @@ public class HttpHelper {
     /**
      * Đọc raw body từ ContentCachingRequestWrapper
      */
-    public static String extractBody(HttpServletRequest request) throws IOException {
-        String contentType = request.getContentType();
+    public static String extractBody(HttpServletRequest request) {
+        try {
+            String contentType = request.getContentType();
 
-        // Nếu là multipart thì không log raw body
-        if (contentType != null && contentType.startsWith("multipart/")) {
-            return "[multipart request: body skipped]";
-        }
-
-        // Nếu không phải multipart => dùng ContentCachingRequestWrapper
-        if (request instanceof ContentCachingRequestWrapper wrapper) {
-            byte[] buf = wrapper.getContentAsByteArray();
-            if (buf.length > 0) {
-                return new String(buf, 0, buf.length, wrapper.getCharacterEncoding());
+            // Nếu là multipart thì không log raw body
+            if (contentType != null && contentType.startsWith("multipart/")) {
+                return "[multipart request: body skipped]";
             }
+
+            // Nếu không phải multipart => dùng ContentCachingRequestWrapper
+            if (request instanceof ContentCachingRequestWrapper wrapper) {
+                byte[] buf = wrapper.getContentAsByteArray();
+                if (buf.length > 0) {
+                    return new String(buf, 0, buf.length, wrapper.getCharacterEncoding());
+                }
+            }
+            return "";
+        } catch (IOException ioException) {
+            System.out.println("Exception error: " + ioException.getMessage());
+            return "";
         }
-        return "";
     }
 
     public static String getClientIP(HttpServletRequest request) {

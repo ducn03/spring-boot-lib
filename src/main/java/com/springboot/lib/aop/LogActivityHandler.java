@@ -18,6 +18,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -32,10 +33,12 @@ public class LogActivityHandler {
     private static final String ERROR_MESSAGE_DEFAULT = "Message chưa được định nghĩa";
     private final MessageSource messageSource;
     private final HttpLogService httpLogService;
+    private final TaskExecutor taskExecutor;
 
-    public LogActivityHandler(MessageSource messageSource, HttpLogService httpLogService) {
+    public LogActivityHandler(MessageSource messageSource, HttpLogService httpLogService, TaskExecutor taskExecutor) {
         this.messageSource = messageSource;
         this.httpLogService = httpLogService;
+        this.taskExecutor = taskExecutor;
     }
 
     @Around("@annotation(LogActivity)")
@@ -59,51 +62,64 @@ public class LogActivityHandler {
                 return point.proceed();
             }
 
-            // HttpLog Request (1 dòng)
-            if (request != null) {
-                log.info("[REQUEST] method={} url={} ip={} targetMethod={} headers={} body={} args={}",
-                        methodType,
-                        HttpHelper.getFullUrl(request),
-                        HttpHelper.getClientIP(request),
-                        point.getSignature().toShortString(),
-                        HttpHelper.extractHeaders(request),
-                        HttpHelper.extractBody(request),
-                        JsonHelper.convertArgsToJson(point.getArgs())
-                );
-            } else {
-                log.warn("[REQUEST] request is null !!!");
-            }
+            // ========== EXTRACT DATA SYNC ==========
+            final String ip = request != null ? HttpHelper.getClientIP(request) : null;
+            final String fullUrl = HttpHelper.getFullUrl(request);
+            final String targetMethod = point.getSignature().toShortString();
+            final String headers = request != null ? HttpHelper.extractHeaders(request).toString() : null;
+            final String body = request != null ? HttpHelper.extractBody(request) : null;
+            final String args = JsonHelper.convertArgsToJson(point.getArgs());
+
+            // Log request
+            taskExecutor.execute(() -> {
+                if (request != null) {
+                    log.info("[REQUEST] method={} url={} ip={} targetMethod={} headers={} body={} args={}",
+                            methodType,
+                            fullUrl,
+                            ip,
+                            targetMethod,
+                            headers,
+                            body,
+                            args
+                    );
+                } else {
+                    log.warn("[REQUEST] request is null !!!");
+                }
+            });
 
             Object result = point.proceed();
+
+            // ========== EXTRACT RESPONSE DATA SYNC ==========
+            HttpServletResponse response = HttpHelper.getCurrentHttpResponse();
+            final int statusCode = response != null ? response.getStatus() : -1;
+            final String resultJson = JsonHelper.toJson(result);
 
             // Duration
             long duration = System.currentTimeMillis() - startTime;
 
-            // HttpLog Response (1 dòng)
-            HttpServletResponse response = HttpHelper.getCurrentHttpResponse();
-            log.info("[RESPONSE] status={} duration={}ms result={} ",
-                    response != null ? response.getStatus() : "N/A",
-                    duration,
-                    JsonHelper.toJson(result)
-            );
+            // ========== LOG RESPONSE ==========
+            taskExecutor.execute(() -> {
+                log.info("[RESPONSE] status={} duration={}ms result={}",
+                        statusCode,
+                        duration,
+                        resultJson
+                );
 
-            // Lưu db để test - Gỡ để giảm latancy
-//            HttpLogRequest httpLogRequest = new HttpLogRequest();
-//            if (request != null) {
-//                httpLogRequest.setIp(HttpHelper.getClientIP(request));
-//            }
-//            httpLogRequest.setMethod(methodType);
-//            httpLogRequest.setUrl(HttpHelper.getFullUrl(request));
-//            httpLogRequest.setTargetMethod(point.getSignature().toShortString());
-//            httpLogRequest.setHeaders(HttpHelper.extractHeaders(request).toString());
-//            if (request != null) {
-//                httpLogRequest.setBody(HttpHelper.extractBody(request));
-//            }
-//            httpLogRequest.setArgs(JsonHelper.convertArgsToJson(point.getArgs()));
-//            httpLogRequest.setStatusCode(response != null ? response.getStatus() : -1);
-//            httpLogRequest.setDuration(duration);
-//            httpLogRequest.setResult(JsonHelper.toJson(result));
-//            httpLogService.log(httpLogRequest);
+                // Save to DB
+                HttpLogRequest httpLogRequest = new HttpLogRequest();
+                httpLogRequest.setIp(ip);
+                httpLogRequest.setMethod(methodType);
+                httpLogRequest.setUrl(fullUrl);
+                httpLogRequest.setTargetMethod(targetMethod);
+                httpLogRequest.setHeaders(headers);
+                httpLogRequest.setBody(body);
+                httpLogRequest.setArgs(args);
+                httpLogRequest.setStatusCode(statusCode);
+                httpLogRequest.setDuration(duration);
+                httpLogRequest.setResult(resultJson);
+
+                httpLogService.log(httpLogRequest);
+            });
 
             return result;
         } catch (AppException appException) {
