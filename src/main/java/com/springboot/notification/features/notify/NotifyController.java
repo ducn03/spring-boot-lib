@@ -4,6 +4,7 @@ import com.springboot.lib.helper.ControllerHelper;
 import com.springboot.notification.route.RouteConstant;
 import com.springboot.notification.service.notify.NotifyService;
 import com.springboot.notification.service.notify.data.ENotifyMethod;
+import com.springboot.notification.service.notify.data.ETemplateNotify;
 import com.springboot.notification.service.notify.dto.NotifyRequest;
 import com.springboot.notification.service.notify.templates.NotifyBuilder;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public class NotifyController {
     public ResponseEntity<?> send(){
         NotifyRequest notifyRequest = new NotifyRequest();
         notifyRequest.setMethod(ENotifyMethod.EMAIL);
-        notifyRequest.setTitle("Test");
-        notifyRequest.setContent(NotifyBuilder.build(1, "133111"));
+        notifyRequest.setTitle("[UAT] OTP");
+        notifyRequest.setContent(NotifyBuilder.build(ETemplateNotify.OTP.getTemplateId(), "133111"));
         notifyRequest.setEmail("dinhducn10@gmail.com");
         return ControllerHelper.success(notifyService.sendMessage(notifyRequest));
     }
