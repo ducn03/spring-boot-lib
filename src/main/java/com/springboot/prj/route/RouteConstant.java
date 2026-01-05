@@ -15,9 +15,5 @@ public interface RouteConstant {
             String UPDATE = "/app/users/{userId}";
             String STATUS_CHANGE = "/app/users/{userId}/status-change";
         }
-
-        interface NOTIFY {
-            String NOTIFY = "/app/notify";
-        }
     }
 }
