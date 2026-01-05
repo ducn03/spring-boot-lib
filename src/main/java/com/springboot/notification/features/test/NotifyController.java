@@ -2,9 +2,9 @@ package com.springboot.notification.features.test;
 
 import com.springboot.lib.helper.ControllerHelper;
 import com.springboot.notification.route.RouteConstant;
-import com.springboot.prj.ws.SocketServer;
-import com.springboot.prj.ws.message.NotifyMessage;
-import com.springboot.prj.ws.room.RoomType;
+import com.springboot.ws.SocketServer;
+import com.springboot.ws.message.NotifyMessage;
+import com.springboot.ws.room.RoomType;
 import lombok.CustomLog;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

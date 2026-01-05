@@ -1,6 +1,6 @@
-package com.springboot.prj.ws;
+package com.springboot.ws;
 
-import com.springboot.prj.ws.message.Message;
+import com.springboot.ws.message.Message;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
 

@@ -1,4 +1,4 @@
-package com.springboot.prj.ws;
+package com.springboot.ws;
 
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.Encoder;

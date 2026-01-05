@@ -1,4 +1,4 @@
-package com.springboot.prj.ws.room;
+package com.springboot.ws.room;
 
 public enum RoomType {
     CART,

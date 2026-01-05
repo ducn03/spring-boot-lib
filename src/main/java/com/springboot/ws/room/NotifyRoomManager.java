@@ -1,9 +1,9 @@
-package com.springboot.prj.ws.room;
+package com.springboot.ws.room;
 
 import com.springboot.lib.helper.JsonHelper;
 import com.springboot.lib.service.redis.Redis;
-import com.springboot.prj.ws.SessionManager;
-import com.springboot.prj.ws.message.Message;
+import com.springboot.ws.SessionManager;
+import com.springboot.ws.message.Message;
 import jakarta.websocket.Session;
 import lombok.CustomLog;
 import org.springframework.stereotype.Component;

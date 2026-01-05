@@ -1,4 +1,4 @@
-package com.springboot.prj.ws.message;
+package com.springboot.ws.message;
 
 import lombok.Getter;
 import lombok.Setter;

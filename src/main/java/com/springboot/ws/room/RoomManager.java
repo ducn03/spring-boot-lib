@@ -1,6 +1,6 @@
-package com.springboot.prj.ws.room;
+package com.springboot.ws.room;
 
-import com.springboot.prj.ws.message.Message;
+import com.springboot.ws.message.Message;
 import jakarta.websocket.Session;
 
 public interface RoomManager {

@@ -1,13 +1,13 @@
-package com.springboot.prj.ws;
+package com.springboot.ws;
 
 import com.springboot.lib.cache.ILazyCache;
 import com.springboot.lib.cache.LazyCache;
 import com.springboot.lib.service.redis.Redis;
-import com.springboot.prj.ws.message.CartMessage;
-import com.springboot.prj.ws.message.ChatMessage;
-import com.springboot.prj.ws.message.Message;
-import com.springboot.prj.ws.message.NotifyMessage;
-import com.springboot.prj.ws.room.*;
+import com.springboot.ws.message.CartMessage;
+import com.springboot.ws.message.ChatMessage;
+import com.springboot.ws.message.Message;
+import com.springboot.ws.message.NotifyMessage;
+import com.springboot.ws.room.*;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
 import lombok.CustomLog;

@@ -1,4 +1,4 @@
-package com.springboot.prj.ws.message;
+package com.springboot.ws.message;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

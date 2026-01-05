@@ -1,4 +1,4 @@
-package com.springboot.prj.ws.message;
+package com.springboot.ws.message;
 
 public interface MessageType {
     String CART = "CART";
