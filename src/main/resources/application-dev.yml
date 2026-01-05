@@ -18,7 +18,7 @@ spring:
           starttls:
             enable: true
             required: true
-        debug: true
+#        debug: true
 
   datasource:
     springboot:

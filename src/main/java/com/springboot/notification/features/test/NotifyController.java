@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.function.ServerRequest;
 
-@Component
+@Component("NotifyControllerTest")
 @CustomLog
 public class NotifyController {
     private final SocketServer socketServer;
