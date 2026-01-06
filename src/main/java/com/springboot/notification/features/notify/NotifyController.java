@@ -6,7 +6,7 @@ import com.springboot.notification.service.notify.NotifyService;
 import com.springboot.notification.service.notify.data.ENotifyMethod;
 import com.springboot.notification.service.notify.data.ETemplateNotify;
 import com.springboot.notification.service.notify.dto.NotifyRequest;
-import com.springboot.notification.service.notify.templates.NotifyBuilder;
+import com.springboot.notification.service.notify.NotifyBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

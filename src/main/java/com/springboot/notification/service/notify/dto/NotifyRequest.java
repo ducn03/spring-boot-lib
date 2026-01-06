@@ -22,6 +22,7 @@ public class NotifyRequest {
      */
     private int templateId;
     private String lang;
+    private boolean isSaveNotification = false;
 
     /**
      * Not require

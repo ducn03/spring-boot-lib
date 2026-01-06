@@ -34,4 +34,9 @@ public class EmailSender implements MessageSender {
         }
         return true;
     }
+
+    @Override
+    public long getBalance() {
+        return 0;
+    }
 }

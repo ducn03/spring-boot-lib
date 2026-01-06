@@ -12,4 +12,9 @@ public class AppSender implements MessageSender {
     public boolean send(NotifyRequest notifyRequest) {
         return false;
     }
+
+    @Override
+    public long getBalance() {
+        return 0;
+    }
 }

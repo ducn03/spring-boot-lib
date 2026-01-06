@@ -1,4 +1,4 @@
-package com.springboot.notification.service.notify.templates;
+package com.springboot.notification.service.notify;
 
 import com.springboot.notification.service.notify.data.ETemplateNotify;
 import com.springboot.notification.utils.StringUtils;

@@ -4,6 +4,7 @@ package com.springboot.notification.service.notify.data;
  * Template ID nên lớn hơn 1
  */
 public enum ETemplateNotify {
+    EMPTY(0),
     OTP(1);
     private final int templateId;
 

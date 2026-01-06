@@ -6,19 +6,6 @@ spring:
   messages:
     basename: messages
     encoding: UTF-8
-  mail:
-    host: ${COM_SPRING_MAIL_HOST:smtp.gmail.com}
-    port: ${COM_SPRING_MAIL_PORT:587}
-    username: ${COM_SPRING_MAIL_USERNAME:}
-    password: ${COM_SPRING_MAIL_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-#        debug: true
 
   datasource:
     springboot:
@@ -40,3 +27,40 @@ spring:
   output:
     ansi:
       enabled=ALWAYS:
+
+  # [NOTIFY] - CONFIG
+  # mail
+  mail:
+    host: ${COM_SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${COM_SPRING_MAIL_PORT:587}
+    username: ${COM_SPRING_MAIL_USERNAME:}
+    password: ${COM_SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  #        debug: true
+
+  # Config zalo and sms - Tích hợp với ZNS - Tùy bên mà key và phương thức integrate khác nhau
+  zns:
+    website-url: ${COM_SPRING_NOTIFICATION_ZNS_WEBSITE_URL:}
+    brand-name: ${COM_SPRING_NOTIFICATION_ZNS_BRAND_NAME:}
+    username: ${COM_SPRING_NOTIFICATION_ZNS_USERNAME:}
+    password: ${COM_SPRING_NOTIFICATION_ZNS_PASSWORD:}
+    get-balance-endpoint: ${COM_SPRING_NOTIFICATION_ZNS_GET_BALANCE_ENDPOINT:}
+    zns-endpoint: ${COM_SPRING_NOTIFICATION_ZNS_ENDPOINT:}
+    from-zns: ${COM_SPRING_NOTIFICATION_ZNS_FROM_ZNS:}
+    otp-template-id: ${COM_SPRING_NOTIFICATION_ZNS_TEMPLATE_ID:}
+    # 365191
+    # confirm-order-template-id: ${CCOM_SPRING_PAYMENT_ZNS_CONFIRM_ORDER_TEMPLATE_ID:}
+  sms:
+    username: ${COM_SPRING_NOTIFICATION_ZNS_USERNAME:}
+    password: ${COM_SPRING_NOTIFICATION_ZNS_PASSWORD:}
+    website-url: ${COM_SPRING_NOTIFICATION_ZNS_WEBSITE_URL:}
+    brand-name: ${COM_SPRING_NOTIFICATION_ZNS_BRAND_NAME:}
+    sms-endpoint: ${COM_SPRING_NOTIFICATION_SMS_ENDPOINT:}
+    get-balance-endpoint: ${COM_SPRING_NOTIFICATION_ZNS_GET_BALANCE_ENDPOINT:}
+    from-sms: ${COM_SPRING_NOTIFICATION_SMS_FROM:}
