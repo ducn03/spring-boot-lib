@@ -29,7 +29,7 @@ public class SmsProperties extends ZnsSmsProperties {
         Map<String, Object> payload = new HashMap<>();
         payload.put("from", fromSms);
         payload.put("to", convertToInternationalFormat(request.getPhone()));
-        payload.put("text", extractOtpText(request.getContent()));
+        payload.put("text", request.getContent());
 
         // Add optional SMS properties if configured
         if (unicode != null) {

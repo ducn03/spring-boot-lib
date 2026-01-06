@@ -28,7 +28,7 @@ public class ZnsProperties extends ZnsSmsProperties {
 
         String internationalPhone = convertToInternationalFormat(request.getPhone());
         Object templateData = prepareTemplateData(request);
-        String smsText = prepareSmsText(request);
+        String smsText = request.getContent();
 
         Map<String, Object> payload = new HashMap<>();
         payload.put("from", fromZns);
@@ -46,13 +46,6 @@ public class ZnsProperties extends ZnsSmsProperties {
             return request.getContent();
         }
         return convertToOtpTemplate(request.getContent());
-    }
-
-    private String prepareSmsText(NotifyRequest request) {
-        if (confirmOrderTemplateId.equals(request.getTemplateId())) {
-            return buildConfirmOrderSms(request.getContent());
-        }
-        return extractOtpText(request.getContent());
     }
 
     private Map<String, Object> buildSmsFailover(String phone, String text) {

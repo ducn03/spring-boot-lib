@@ -94,56 +94,6 @@ public abstract class ZnsSmsProperties {
         }
     }
 
-    /**
-     * Extract OTP text from message object
-     */
-    protected String extractOtpText(Object messageObject) {
-        try {
-            @SuppressWarnings("unchecked")
-            Map<String, String> messageMap = (Map<String, String>) messageObject;
-            String otpCode = messageMap.get("message");
-            return buildOtpSms(otpCode);
-        } catch (Exception e) {
-            throw new AppException(AppErrorCodes.NOTIFY.INVALID_MESSAGE_FORMAT);
-        }
-    }
-
-    /**
-     * Build OTP SMS text
-     */
-    protected String buildOtpSms(String otp) {
-        return String.format(
-                "%s Ma OTP tren website %s cua ban la %s. " +
-                        "Tuyet doi KHONG chia se ma OTP nay cho bat ky ai. " +
-                        "Ma OTP co hieu luc trong %d phut.",
-                brandName, websiteUrl, otp, OTP_VALIDITY_MINUTES
-        );
-    }
-
-    /**
-     * Build confirm order SMS text
-     */
-    protected String buildConfirmOrderSms(Object messageObject) {
-        try {
-            @SuppressWarnings("unchecked")
-            Map<String, String> messageMap = (Map<String, String>) messageObject;
-
-            String orderId = messageMap.getOrDefault("ma_don", "0");
-            String lockerId = messageMap.getOrDefault("ma_tu", "0");
-            String code = messageMap.getOrDefault("code", "0");
-            String key = messageMap.getOrDefault("key", "0");
-
-            return String.format(
-                    "%s Don hang %s da duoc giao toi tu so %s. " +
-                            "Vui long truy cap %s/o/%s?ts=%s de mo tu. " +
-                            "Cam on va chuc Quy Khach ngon mieng.",
-                    brandName, orderId, lockerId, websiteUrl, code, key
-            );
-        } catch (Exception e) {
-            throw new AppException(AppErrorCodes.NOTIFY.INVALID_MESSAGE_FORMAT);
-        }
-    }
-
     public void handleApiResponse(HttpResponse<String> response) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(response.body());
         if (jsonNode.get("status").asInt() == 1) {
