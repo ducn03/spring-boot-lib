@@ -15,16 +15,10 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "spring.zns")
 public class ZnsProperties extends ZnsSmsProperties {
 
-    // ZNS specific fields
     private String fromZns;
     private String otpTemplateId;
     private String confirmOrderTemplateId;
-    private String getBalanceEndpoint;
     private String znsEndpoint;
-
-    // Inherited from ZnsSmsProperties:
-    // - username, password, endpoint
-    // - All common methods
 
     /**
      * Build ZNS payload for notification request

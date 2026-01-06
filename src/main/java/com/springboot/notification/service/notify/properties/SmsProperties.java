@@ -15,15 +15,10 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "spring.sms")
 public class SmsProperties extends ZnsSmsProperties {
 
-    // SMS specific fields
     private String fromSms;
     private Boolean unicode;
     private Integer contentId;
     private String smsEndpoint;
-
-    // Inherited from ZnsSmsProperties:
-    // - username, password, endpoint
-    // - All common methods
 
     /**
      * Build SMS payload for direct SMS sending

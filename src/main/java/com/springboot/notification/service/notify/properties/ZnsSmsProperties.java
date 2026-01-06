@@ -37,6 +37,7 @@ public abstract class ZnsSmsProperties {
     protected String endpoint;
     protected String websiteUrl;
     protected String brandName;
+    protected String getBalanceEndpoint;
 
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
