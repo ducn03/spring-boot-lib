@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CdnDTO {
-    private long id;
+    private Long id;
     private Integer stt;
 
     private EDomain domain;

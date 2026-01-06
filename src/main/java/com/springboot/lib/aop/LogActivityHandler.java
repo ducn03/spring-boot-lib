@@ -8,6 +8,7 @@ import com.springboot.lib.helper.HttpHelper;
 import com.springboot.lib.helper.JsonHelper;
 import com.springboot.lib.service.log.HttpLogRequest;
 import com.springboot.lib.service.log.HttpLogService;
+import com.springboot.notification.utils.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -124,8 +125,13 @@ public class LogActivityHandler {
             return result;
         } catch (AppException appException) {
             int errorCode = appException.getErrorCode();
-            log.error("AppException: code={} message={}", errorCode, getMessage(errorCode), appException);
-            return ControllerHelper.error(errorCode, getMessage(errorCode));
+            String errorMessage = getMessage(errorCode);
+            if (ERROR_MESSAGE_DEFAULT.equals(errorMessage)
+                    && !StringUtils.isNullOrEmpty(appException.getErrorMessage())) {
+                errorMessage = appException.getErrorMessage();
+            }
+            log.error("AppException: code={} message={}", errorCode, errorMessage, appException);
+            return ControllerHelper.error(errorCode, errorMessage);
         } catch (Throwable ex) {
             log.error("Unexpected error in LogActivityHandler", ex);
             return ControllerHelper.systemError();

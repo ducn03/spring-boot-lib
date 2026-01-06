@@ -33,7 +33,7 @@ public class FileController {
 
     /**
      * Upload file
-     * POST /tgh/cdn/uploads
+     * POST /app/cdn/uploads
      */
     @LogActivity
     @PostMapping(value = "/uploads", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -44,7 +44,7 @@ public class FileController {
 
     /**
      * Get file
-     * GET /tgh/cdn/{env}/{domain}/{group}/{name}
+     * GET /app/cdn/{env}/{domain}/{group}/{name}
      */
     @LogActivity
     @GetMapping("/{env}/{domain}/{group}/{name}")
@@ -55,7 +55,7 @@ public class FileController {
             @PathVariable String name,
             HttpServletRequest servletRequest
     ) throws Exception {
-        String url = String.format("tgh/cdn/%s/%s/%s/%s", env, domain, group, name);
+        String url = String.format("app/cdn/%s/%s/%s/%s", env, domain, group, name);
         log.info("Download request: {}", url);
 
         Resource resource = fileService.getFile(url);

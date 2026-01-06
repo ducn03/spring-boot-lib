@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
-    @Value("${cdn.base-path:tgh/cdn}")
+    @Value("${cdn.base-path:app/cdn}")
     private String cdnBasePath;
 
     private final Set<String> createdDirs = ConcurrentHashMap.newKeySet();
@@ -92,7 +92,7 @@ public class FileServiceImpl implements FileService {
 
             return cdnMapper.toDTO(cdn);
         } catch (Exception e) {
-            throw new AppException(AppErrorCodes.FILE.FILE_UPLOAD_ERROR, "Cannot upload file");
+            throw new AppException(AppErrorCodes.FILE.FILE_UPLOAD_ERROR, "Cannot upload file" + e.getMessage());
         }
     }
 
