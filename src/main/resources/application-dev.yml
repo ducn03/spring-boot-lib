@@ -13,14 +13,14 @@ spring:
       jdbc-url: ${COM_SPRING_DATABASE_URL:jdbc:mysql://localhost:3307/springbootlib}
       username: ${COM_SPRING_DATABASE_USERNAME:root}
       password: ${COM_SPRING_DATABASE_PASSWORD:root}
-    hikari:
-      connection-timeout: 30000
-      # Số connection tối thiểu luôn duy trì trong pool
-      minimum-idle: 2
-      # Số connection tối đa trong pool
-      maximum-pool-size: 20
-      # Phát hiện connection leak (connection không được trả về pool)
-      leak-detection-threshold: 60000  # 60 seconds
+      hikari:
+        connection-timeout: 30000
+        # Số connection tối thiểu luôn duy trì trong pool
+        minimum-idle: 2
+        # Số connection tối đa trong pool
+        maximum-pool-size: 20
+        # Phát hiện connection leak (connection không được trả về pool)
+        leak-detection-threshold: 60000  # 60 seconds
   redis:
     host: ${COM_SPRING_REDIS_HOST:localhost}
     port: ${COM_SPRING_REDIS_PORT:6379}
