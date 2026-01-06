@@ -29,6 +29,7 @@ public class EmailSender implements MessageSender {
             helper.setText(notifyRequest.getContent(), true);
 
             mailSender.send(message);
+            log.info("Send mail success {} : {}", notifyRequest.getEmail(), notifyRequest.getSendTime());
         } catch (Exception ignore) {
             log.error("Send email fail {} : {}", notifyRequest.getEmail(), notifyRequest.getSendTime());
         }
