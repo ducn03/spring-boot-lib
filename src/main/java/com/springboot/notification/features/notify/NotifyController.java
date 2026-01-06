@@ -26,6 +26,6 @@ public class NotifyController {
         notifyRequest.setTitle("[UAT] OTP");
         notifyRequest.setContent(NotifyBuilder.build(ETemplateNotify.OTP.getTemplateId(), "133111"));
         notifyRequest.setEmail("dinhducn10@gmail.com");
-        return ControllerHelper.success(notifyService.sendMessage(notifyRequest));
+        return ControllerHelper.success(notifyService.sendNotify(notifyRequest));
     }
 }
