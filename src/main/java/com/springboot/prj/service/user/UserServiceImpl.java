@@ -9,6 +9,8 @@ import com.springboot.lib.exception.ErrorCodes;
 import com.springboot.lib.service.redis.Redis;
 import com.springboot.prj.service.user.response.UserDTO;
 import com.springboot.prj.service.user.request.UserRequest;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.CustomLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +25,13 @@ import java.util.stream.Collectors;
 @CustomLog
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final EntityManager entityManager;
     private final UserMapper userMapper;
     private final Redis redis;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, Redis redis) {
+    public UserServiceImpl(UserRepository userRepository, EntityManager entityManager, UserMapper userMapper, Redis redis) {
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
         this.userMapper = userMapper;
         this.redis = redis;
     }
@@ -51,13 +55,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO create(UserRequest userRequest) {
         if (!redis.singleRequest(userRequest.getUsername(), 3)){
             throw new AppException(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
         }
         User user = this.userMapper.toEntity(userRequest);
-        user = this.userRepository.saveAndFlush(user);
+        // user = this.userRepository.save(user);
+        this.entityManager.persist(user);
+        log.info("userID: " + user.getId());
+        this.testEM(user);
+        log.info("user: " + user);
+        // Khi cần
+         this.entityManager.flush();
+         this.entityManager.clear();
         return this.userMapper.toDTO(user);
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    void testEM(User user) {
+        user.setUsername("ducnguyenTestNewTransaction");
+        this.entityManager.persist(user);
     }
 
     @Override
