@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService {
         this.testEM(user);
         log.info("user: " + user);
         // Khi cần
-         this.entityManager.flush();
-         this.entityManager.clear();
+        this.entityManager.flush();
+        this.entityManager.clear();
         return this.userMapper.toDTO(user);
     }
 
