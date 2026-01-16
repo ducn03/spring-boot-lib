@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCodes.SYSTEM.DUPLICATE_REQUEST);
         }
         User user = this.userMapper.toEntity(userRequest);
-        user = this.userRepository.save(user);
+        user = this.userRepository.saveAndFlush(user);
         return this.userMapper.toDTO(user);
     }
 

@@ -7,20 +7,19 @@ import com.springboot.notification.service.notify.data.ETemplateNotify;
 import com.springboot.notification.service.notify.dto.NotifyRequest;
 import com.springboot.notification.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ExecutorService;
 
 @Slf4j
 @Service
 public class NotifyService {
     private final MessageSenderFactory senderFactory;
-    private final ExecutorService executorService;
+    private final TaskExecutor taskExecutor;
     private final static long BALANCE_WARNING = 100000;
 
-    public NotifyService(MessageSenderFactory senderFactory, ExecutorService executorService) {
+    public NotifyService(MessageSenderFactory senderFactory, TaskExecutor taskExecutor) {
         this.senderFactory = senderFactory;
-        this.executorService = executorService;
+        this.taskExecutor = taskExecutor;
     }
 
     public boolean sendNotify(NotifyRequest notifyRequest) {
@@ -37,7 +36,7 @@ public class NotifyService {
         boolean result = sender.send(notifyRequest);
 
         if (result) {
-            executorService.execute(() -> {
+            taskExecutor.execute(() -> {
                 handleSomethingAfterSendNotification(notifyRequest);
             });
         }
